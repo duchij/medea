@@ -1,0 +1,31 @@
+﻿-- Adminer 4.1.0 MySQL dump
+
+SET NAMES utf8;
+SET time_zone = '+00:00';
+
+DROP TABLE IF EXISTS `user_view_log`;
+CREATE TABLE `user_view_log` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `user_row_count` bigint(20) NOT NULL,
+  `date` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00' ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_slovak_ci;
+
+
+DROP TABLE IF EXISTS `user_view_sync`;
+CREATE TABLE `user_view_sync` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `medea_kod` varchar(20) CHARACTER SET ascii NOT NULL,
+  `medea_id` varchar(20) CHARACTER SET ascii NOT NULL,
+  `surname` text COLLATE utf8_slovak_ci,
+  `name` text COLLATE utf8_slovak_ci,
+  `titel` text COLLATE utf8_slovak_ci,
+  `workname` text COLLATE utf8_slovak_ci,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `medea_kod_medea_id` (`medea_kod`,`medea_id`),
+  KEY `medea_kod` (`medea_kod`),
+  KEY `medea_id` (`medea_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_slovak_ci;
+
+
+-- 2015-05-24 18:56:57
