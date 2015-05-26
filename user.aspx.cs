@@ -38,7 +38,7 @@ public partial class user : System.Web.UI.Page
 
     protected void loadDataUser()
     {
-        SortedList res = syncdb.getRow("SELECT * FROM [user_view_log] ORDER BY [id] DESC LIMIT 1");
+        SortedList res = syncdb.getRow("SELECT * FROM [user_view_log] ORDER BY [date] DESC LIMIT 1");
 
         if (res["id"] == null)
         {
@@ -53,56 +53,68 @@ public partial class user : System.Web.UI.Page
 
     protected void loadNewData(SortedList data)
     {
-        string query=x2.sprintf("SELECT * FROM ADMINSQL.uzivatel_view (SELECT id,kod, ROW_NUMBER() OVER (ORDER BY id) AS row FROM ADMINSQL.uzivatel_view) AS tmp WHERE row > {0} ",new string[] {data["user_row_count"].ToString()});
+        string query="SELECT * FROM ADMINSQL.uzivatel_view";
         
         Dictionary<int, Hashtable> importData = mdb.getTable(query);
 
         int dataLn = importData.Count;
 
-        if (dataLn> 0)
+        SortedList userSync = syncdb.getRow("SELECT * FROM [user_view_log] ORDER BY [date] DESC LIMIT 1");
+
+        if (userSync["user_row_count"] != null)
         {
-            Dictionary<int, Hashtable> saveData = new Dictionary<int, Hashtable>();
-
-            for (int i = 0; i < dataLn; i++)
+            int syncCn = Convert.ToInt32(userSync["user_row_count"]);
+            if (syncCn < dataLn)
             {
-                saveData[i] = new Hashtable();
-
-                saveData[i]["medea_kod"] = importData[i]["kod"];
-                saveData[i]["medea_id"] = importData[i]["id"];
-                saveData[i]["surname"] = importData[i]["prijmeni"];
-                saveData[i]["name"] = importData[i]["meno"];
-                saveData[i]["titel"] = importData[i]["titul"];
-                saveData[i]["workname"] = importData[i]["pracjmeno"];
+                this.startNewImportData(importData);
             }
-
-            SortedList saveRes = syncdb.mysql_insert_arr("user_view_sync", saveData);
-
-            if (Convert.ToBoolean(saveRes["status"]))
-            {
-                SortedList logData = new SortedList();
-                int preRows = Convert.ToInt32(data["user_row_count"].ToString());
-
-                logData.Add("user_row_count", dataLn + preRows);
-
-                SortedList logDRes = syncdb.insertRow("user_view_log", logData);
-                if (Convert.ToBoolean(logDRes["status"]))
-                {
-                    this.msg_lbl.Text = "OK";
-                    x2log.logData(logDRes, "", "partial user view import success");
-                }
-
-            }
-            else
-            {
-                this.msg_lbl.Text = saveRes["msg"].ToString();
-                x2log.logData(saveRes, "", "partial user view import error");
-            } 
         }
 
-          
+    }
 
+    protected void startNewImportData(Dictionary<int, Hashtable> importData)
+    {
+        //Dictionary<int, Hashtable> importData = mdb.getTable("SELECT * FROM ADMINSQL.uzivatel_view");
+
+        Dictionary<int, Hashtable> saveData = new Dictionary<int, Hashtable>();
+        int dataLn = importData.Count;
+
+        for (int i=0; i< dataLn; i++)
+        {
+            saveData[i] = new Hashtable();
+            saveData[i]["medea_kod"] = importData[i]["kod"];
+            saveData[i]["medea_id"] = importData[i]["id"];
+            saveData[i]["surname"] = importData[i]["prijmeni"];
+            saveData[i]["name"] = importData[i]["meno"];
+            saveData[i]["titel"] = importData[i]["titul"];
+            saveData[i]["workname"] = importData[i]["pracjmeno"];
+
+        }
+
+        SortedList saveRes = syncdb.mysql_insert_arr("user_view_sync", saveData);
+
+        if (Convert.ToBoolean(saveRes["status"]))
+        {
+            SortedList logData = new SortedList();
+            logData.Add("user_row_count", dataLn);
+
+            SortedList logDRes = syncdb.insertRow("user_view_log", logData);
+            if (Convert.ToBoolean(logDRes["status"]))
+            {
+                this.msg_lbl.Text = "OK";
+                x2log.logData(logDRes, "", "full user view import success");
+            }
+           
+
+            
+        }
+        else
+        {
+            this.msg_lbl.Text = saveRes["msg"].ToString();
+        }   
 
     }
+    
 
     protected void startImportData()
     {
