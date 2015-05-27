@@ -340,6 +340,10 @@ public class syncdb
             {
                 values[i] = "NULL";
             }
+            else if (row.Value.ToString() =="NULL")
+            {
+                values[i] = "NULL";
+            }
             else
             {
                 values[i] = "'" + row.Value.ToString() + "'";
@@ -477,6 +481,10 @@ public class syncdb
                     _tmp[j] = "NULL";
                 }
                 else if (_row.Value.ToString().Trim().Length == 0)
+                {
+                    _tmp[j] = "NULL";
+                }
+                else if (_row.Value.ToString() == "NULL")
                 {
                     _tmp[j] = "NULL";
                 }
