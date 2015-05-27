@@ -215,7 +215,7 @@ public partial class helpers_medea : System.Web.UI.Page
                             saveData[i]["cas_medea"] = row.Value;
                             break;
                         case "datum":
-                            saveData[i]["datum"] = x2.unixDate(Convert.ToDateTime(data[i]["datum"].ToString()));
+                            saveData[i]["datum"] = x2.unixDate(Convert.ToDateTime(data[i]["datum"].ToString()))+" "+saveData[i]["cas"].ToString();
                             break;
                         case "B":
                             if (row.Value == null || row.Value.ToString().Trim().Length == 0)
