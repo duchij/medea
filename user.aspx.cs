@@ -91,7 +91,7 @@ public partial class user : System.Web.UI.Page
 
         }
 
-        SortedList saveRes = syncdb.mysql_insert_arr("user_view_sync", saveData);
+        SortedList saveRes = syncdb.mysql_insert_arr("user_view_sync", saveData,"");
 
         if (Convert.ToBoolean(saveRes["status"]))
         {
@@ -135,7 +135,7 @@ public partial class user : System.Web.UI.Page
 
         }
 
-        SortedList saveRes = syncdb.mysql_insert_arr("user_view_sync", saveData);
+        SortedList saveRes = syncdb.mysql_insert_arr("user_view_sync", saveData,"");
 
         if (Convert.ToBoolean(saveRes["status"]))
         {

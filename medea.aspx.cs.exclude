@@ -77,7 +77,10 @@ public partial class helpers_medea : System.Web.UI.Page
                     string[] tmpArr = lastSyncRow["last_time"].ToString().Split(':');
                     queryIn += "WHERE datum='{0}' AND cas >= {1} AND cas <= {2}";
                     string timeFrom = tmpArr[0]+tmpArr[1];
-                    DateTime timeTo = DateTime.Now.AddMinutes(-180);
+                    
+                    TimeSpan ts = 
+
+
                     string timeToStr = String.Format("{0:HH}",timeTo)+String.Format("{0:mm}",timeTo);
 
                     query = x2.sprintf(queryIn, new string[] { x2.unixDate(date), timeFrom, timeToStr });

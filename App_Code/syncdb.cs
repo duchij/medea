@@ -450,7 +450,7 @@ public class syncdb
         return result;
     }
 
-    public SortedList mysql_insert_arr(string table, Dictionary<int, Hashtable> data)
+    public SortedList mysql_insert_arr(string table, Dictionary<int, Hashtable> data, string ins_type)
     {
         SortedList result = new SortedList();
 
@@ -494,7 +494,7 @@ public class syncdb
         string t_vals = string.Join(",", col_vals);
 
         StringBuilder sb = new StringBuilder();
-        sb.AppendFormat("INSERT INTO `{0}` ({1}) VALUES {2} ON DUPLICATE KEY UPDATE {3};", table, t_cols, t_cols_vals, t_vals);
+        sb.AppendFormat("INSERT {0} INTO `{1}` ({2}) VALUES {3} ON DUPLICATE KEY UPDATE {4};", ins_type,table, t_cols, t_cols_vals, t_vals);
         string query = sb.ToString();
 
         OdbcTransaction trans1 = null;
